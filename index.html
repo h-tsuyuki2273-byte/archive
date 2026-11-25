@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1e8d0">
+  <title>アーカイブサイト</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5efd9;
+      --ink: #30294b;
+      --muted: #847b9b;
+      --line: #d8c7a6;
+      --accent: #bc496a;
+      --serif: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+      --sans: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--paper); }
+    body { min-height: 100vh; margin: 0; color: var(--ink); font-family: var(--sans); background: radial-gradient(ellipse at 12% 9%, rgb(255 255 255 / 78%) 0, transparent 24rem), radial-gradient(ellipse at 93% 37%, #dedaf0 0, transparent 27rem), repeating-linear-gradient(0deg, transparent 0 39px, rgb(72 59 89 / 3%) 40px), linear-gradient(135deg, #f5efd9, #f8e8e7 52%, #e9e8f3); }
+    body::before, body::after { position: fixed; z-index: 0; opacity: .75; pointer-events: none; font-size: 30px; }
+    body::before { content: "♠"; top: 34%; left: 2.5%; color: #665d8a; transform: rotate(-16deg); }
+    body::after { content: "⌛"; right: 3%; top: 70%; color: #bc496a; }
+    .page { position: relative; z-index: 1; width: min(1440px, 100% - 64px); margin: 0 auto; }
+    header { position: relative; padding: clamp(48px, 8vw, 100px) 0 38px; text-align: center; }
+    .eyebrow { display: inline-block; margin: 0 0 18px; padding: 8px 17px; border: 1px dashed #8f7893; border-radius: 3px 18px 4px 16px; background: #f8ebce; color: #74566d; font-size: 10px; letter-spacing: .2em; box-shadow: 3px 4px 0 #d5c59f; transform: rotate(-2deg); }
+    h1 { margin: 0; color: #373052; font-family: var(--serif); font-weight: 600; font-size: clamp(36px, 5vw, 64px); letter-spacing: .12em; text-shadow: 3px 3px 0 #f4c5a8, -2px -2px 0 #fffdf3; }
+    h1::before, h1::after { display: inline-block; color: #bc496a; font-family: var(--sans); font-size: .48em; vertical-align: .45em; }
+    h1::before { content: "♧"; margin-right: .7em; transform: rotate(-18deg); }
+    h1::after { content: "◷"; margin-left: .7em; transform: rotate(14deg); }
+    main { padding: 24px 0 88px; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 25px; }
+    .entry { position: relative; min-width: 0; padding: 12px 12px 16px; border: 2px solid #fffaf0; border-radius: 4px 18px 5px 17px; background: #fff9e9; box-shadow: 4px 6px 0 #d9c9a9, 0 12px 26px rgb(65 48 73 / 13%); transition: transform .25s ease, box-shadow .25s ease; }
+    .entry:nth-child(3n + 1) { transform: rotate(-.8deg); }
+    .entry:nth-child(3n + 2) { transform: rotate(1deg); }
+    .entry:nth-child(3n) { transform: rotate(-.3deg); }
+    .entry:hover { transform: translateY(-5px) rotate(0deg); box-shadow: 5px 11px 0 #d9c9a9, 0 18px 30px rgb(65 48 73 / 17%); }
+    .entry::after { content: "✦"; position: absolute; top: -13px; right: 15px; color: #bd4b6b; font-size: 24px; text-shadow: 1px 2px #f7dcaa; transform: rotate(12deg); }
+    .photo-button { position: relative; display: block; width: 100%; padding: 0; border: 3px solid #e9d8b8; border-radius: 3px 13px 4px 12px; background: #e1d8c7; cursor: zoom-in; overflow: hidden; }
+    .photo-button img { display: block; width: 100%; height: clamp(300px, 42vw, 560px); object-fit: cover; transition: transform .45s ease; }
+    .photo-button:hover img, .photo-button:focus-visible img { transform: scale(1.035); }
+    .photo-button:focus-visible { outline: 3px solid #bd4b6b; outline-offset: 3px; }
+    .caption { display: flex; align-items: baseline; gap: 10px; padding: 14px 5px 0; margin-top: 4px; }
+    .number { display: grid; flex: 0 0 29px; width: 29px; height: 29px; place-items: center; border: 1px solid #c2b5d4; border-radius: 50% 44% 55% 43%; background: #e9e5f2; color: #4d456e; font-size: 10px; letter-spacing: .04em; transform: rotate(8deg); }
+    .name { margin: 0; color: #373052; font-family: var(--serif); font-size: 16px; font-weight: 600; letter-spacing: .04em; }
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 0 42px; }
+    .tag { padding: 5px 10px; border: 1px dashed #c1aec4; border-radius: 4px 13px 5px 12px; background: #eceaf4; color: #5d5275; font-size: 11px; line-height: 1.5; }
+    dialog { width: min(94vw, 1100px); max-width: none; max-height: 94vh; padding: 0; border: 0; background: transparent; overflow: visible; }
+    dialog::backdrop { background: rgb(39 32 62 / 88%); backdrop-filter: blur(5px); }
+    dialog img { display: block; max-width: 100%; max-height: 88vh; margin: auto; object-fit: contain; }
+    .close { position: fixed; top: 18px; right: 22px; width: 44px; height: 44px; border: 1px solid #f4dfb8; border-radius: 50% 45% 52% 43%; background: #fff2d5; color: #493e68; font-size: 25px; line-height: 1; cursor: pointer; box-shadow: 0 4px 18px rgb(0 0 0 / 20%); }
+    @media (min-width: 1500px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 36px, 600px); }
+      header { padding: 48px 0 30px; }
+      main { padding-top: 24px; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 13px; }
+      .entry { padding: 7px 7px 12px; border-radius: 4px 13px 5px 12px; }
+      .photo-button { border-radius: 3px 9px 4px 8px; }
+      .photo-button img { height: clamp(220px, 66vw, 390px); }
+      .caption { gap: 7px; padding: 10px 2px 0; margin-top: 3px; }
+      .number { flex-basis: 23px; width: 23px; height: 23px; font-size: 9px; }
+      .name { font-size: 13px; }
+      .tags { gap: 5px; margin: 8px 0 0 30px; }
+      .tag { padding: 4px 7px; font-size: 10px; }
+    }
+    @media (max-width: 420px) {
+      .page { width: calc(100% - 28px); }
+      .grid { grid-template-columns: 1fr; gap: 23px; }
+      .photo-button img { height: min(120vw, 520px); }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <p class="eyebrow">PERSONAL ARCHIVE</p>
+      <h1>アーカイブサイト</h1>
+    </header>
+    <main>
+      <section class="grid" id="archive" aria-label="写真"></section>
+    </main>
+  </div>
+  <dialog id="viewer" aria-label="写真を拡大表示">
+    <button class="close" type="button" aria-label="閉じる">×</button>
+    <img alt="">
+  </dialog>
+  <script>
+    const photos = [
+      {
+        file: "01.jpg",
+        tags: [
+          { label: "名前", value: "駅の券売機の画面" },
+          { label: "いつ", value: "2020年代" },
+          { label: "どこで", value: "〇〇駅の改札前" }
+        ]
+      },
+      { file: "02.jpg", tags: [] },
+      { file: "03.jpg", tags: [] },
+      { file: "04.jpg", tags: [] },
+      { file: "05.jpg", tags: [] }
+    ];
+    const archive = document.querySelector("#archive");
+    const viewer = document.querySelector("#viewer");
+    const enlarged = viewer.querySelector("img");
+
+    photos.forEach((photo, index) => {
+      const { file, tags } = photo;
+      const article = document.createElement("article");
+      article.className = "entry";
+      const button = document.createElement("button");
+      button.className = "photo-button";
+      button.type = "button";
+      button.setAttribute("aria-label", `写真 ${String(index + 1).padStart(2, "0")}`);
+      const image = document.createElement("img");
+      image.src = `images/${file}`;
+      image.alt = "";
+      image.loading = index < 3 ? "eager" : "lazy";
+      image.decoding = "async";
+      button.append(image);
+      button.addEventListener("click", () => {
+        enlarged.src = image.src;
+        enlarged.alt = tags.find(tag => tag.label === "名前")?.value ?? "(ここに言葉)";
+        viewer.showModal();
+      });
+      const caption = document.createElement("div");
+      caption.className = "caption";
+      const number = document.createElement("span");
+      number.className = "number";
+      number.textContent = String(index + 1).padStart(2, "0");
+      const name = document.createElement("p");
+      name.className = "name";
+      name.textContent = tags.find(tag => tag.label === "名前")?.value ?? "(ここに言葉)";
+      caption.append(number, name);
+      article.append(button, caption);
+      const additionalTags = tags.filter(tag => tag.label !== "名前");
+      if (additionalTags.length) {
+        const tagList = document.createElement("div");
+        tagList.className = "tags";
+        tagList.setAttribute("aria-label", "タグ");
+        additionalTags.forEach(tag => {
+          const chip = document.createElement("span");
+          chip.className = "tag";
+          chip.textContent = `${tag.label}: ${tag.value}`;
+          tagList.append(chip);
+        });
+        article.append(tagList);
+      }
+      archive.append(article);
+    });
+
+    viewer.querySelector(".close").addEventListener("click", () => viewer.close());
+    viewer.addEventListener("click", event => { if (event.target === viewer) viewer.close(); });
+  </script>
+</body>
+</html>
